@@ -1,0 +1,18 @@
+#!/bin/zsh
+ME=$(basename $0)
+USAGE="usage: ${ME} [-q 0-9] file.wav ..."
+QUAL=2
+while getopts q: c
+do
+	case "${c}" in
+	q)	QUAL="${OPTARG}";;
+	*)	echo "${USAGE}">&2; exit 1;;
+	esac
+done
+shift $(expr ${OPTIND} - 1)
+for x in $@
+do
+	dn=$(dirname $x)
+	bn=$(basename $x .wav).mp3
+	lame --quiet -vbr-new -q ${QUAL} ${x} ${dn}/${bn}
+done
